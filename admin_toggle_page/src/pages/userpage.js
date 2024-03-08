@@ -30,49 +30,83 @@ const UserPage = () => {
             searchParams.set("limit", limit);
             setSearchParams(searchParams, { replace: true });
         }
-        //
-        const sortChange = (type) => {
-            setUserData(
-                [...userData].sort((a, b) => {
-                    const strA = String(a[type]);
-                    const strB = String(b[type]);
-                    return strA.localeCompare(strB); //a,b 문자열 정렬
-                })
-            );
+        //userData 정렬하는 함수
+        const sortChange = () => {
+            const newSort = searchParams.get("sort"); //이름순/생일순
+            const newSortOrder = searchParams.get("sortOrder"); //내림차순/오름차순
+            let sortedUsers = [...userData];
+            //만약 이름순생일순 & 내림차순오름차순 값이 있다면
+            if (newSort && newSortOrder) {
+                sortedUsers.sort((a, b) => {
+                    const strA = String(a[newSort]);
+                    const strB = String(b[newSort]);
+                    return newSortOrder === "asc"
+                        ? //오름차순일때 strA와 strB 정렬
+                          strA.localeCompare(strB)
+                        : //내림차순일때 strB와 strA 정렬
+                          strB.localeCompare(strA);
+                });
+            }
+            setUserData(sortedUsers);
         };
-
+        //이름순/나이순 정렬
         const newSort = urlParams.get("sort");
         if (newSort && userData.length > 0) {
             sortChange(newSort);
         }
+        //오름차순/내림차순 정렬
+        const newSortOrder = urlParams.get("sortOrder");
+        if (newSortOrder && userData.length > 0) {
+            sortChange(newSortOrder);
+        }
     }, [searchParams]);
 
     // 페이지당 보여줄 데이터 수를 변경할때마다 실행되는 함수
-    const handleLimitChange = (e) => {
-        const newLimit = Number(e.target.value); //새로운 limit 값
-        searchParams.set("limit", newLimit); //새로운 URL limit 값을 newLimit으로 변경
-        setSearchParams(searchParams);
+    // const handleLimitChange = (e) => {
+    //     const newLimit = Number(e.target.value); //새로운 limit 값
+    //     searchParams.set("limit", newLimit); //새로운 URL limit 값을 newLimit으로 변경
+    //     setSearchParams(searchParams);
+    // };
+
+    //이름/생일순 정렬하는 함수
+    const handleSortChange = (key, value) => {
+        searchParams.set(key, value);
+        setSearchParams(searchParams, { replace: true });
     };
 
     //오름차순/내림차순 정렬하는 함수
-    const handleSortChange = (e) => {
-        const newSort = e.target.value;
-        searchParams.set("sort", newSort);
-        setSearchParams(searchParams, { replace: true });
-    };
+    // searchParams.set("sortOrder", newSortOrder);
+    // 컨벤션 => 객체,
+    // const handleSortOrderChange = (e) => {
+    //     const newSortOrder = e.target.value;
+    //     searchParams.set("sortOrder", newSortOrder);
+    //     setSearchParams(searchParams, { replace: true });
+    // };
+
     return (
         <MainWrapper>
-            <select value={limit} onChange={handleLimitChange}>
+            <select
+                value={limit}
+                onChange={(e) =>
+                    handleSortChange("limit", Number(e.target.value))
+                }
+            >
                 <option value="20">20개씩 보기</option>
                 <option value="50">50개씩 보기</option>
             </select>
-            {/* <select>
+            <select
+                value={urlParams?.get("sortOrder")}
+                onChange={(e) => handleSortChange("sortOrder", e.target.value)}
+            >
                 <option value="desc">내림차순</option>
                 <option value="asc">오름차순</option>
-            </select> */}
-            <select value={urlParams?.get("sort")} onChange={handleSortChange}>
-                <option value={"name"}>이름순</option>
-                <option value={"birth"}>생일순</option>
+            </select>
+            <select
+                value={urlParams?.get("sort")}
+                onChange={(e) => handleSortChange("sort", e.target.value)}
+            >
+                <option value="name">이름순</option>
+                <option value="birth">생일순</option>
             </select>
 
             {userData.slice(startIndex, startIndex + limit).map((user) => (
