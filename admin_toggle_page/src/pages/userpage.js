@@ -61,27 +61,11 @@ const UserPage = () => {
         }
     }, [searchParams]);
 
-    // 페이지당 보여줄 데이터 수를 변경할때마다 실행되는 함수
-    // const handleLimitChange = (e) => {
-    //     const newLimit = Number(e.target.value); //새로운 limit 값
-    //     searchParams.set("limit", newLimit); //새로운 URL limit 값을 newLimit으로 변경
-    //     setSearchParams(searchParams);
-    // };
-
     //이름/생일순 정렬하는 함수
     const handleSortChange = (key, value) => {
         searchParams.set(key, value);
         setSearchParams(searchParams, { replace: true });
     };
-
-    //오름차순/내림차순 정렬하는 함수
-    // searchParams.set("sortOrder", newSortOrder);
-    // 컨벤션 => 객체,
-    // const handleSortOrderChange = (e) => {
-    //     const newSortOrder = e.target.value;
-    //     searchParams.set("sortOrder", newSortOrder);
-    //     setSearchParams(searchParams, { replace: true });
-    // };
 
     return (
         <MainWrapper>
