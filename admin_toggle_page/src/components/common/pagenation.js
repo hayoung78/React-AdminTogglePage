@@ -10,7 +10,8 @@ function Pagination({ total, limit, currentPage, curParams, setCurParams }) {
         setSearchParams(searchParams);
     };
     return (
-        <>
+        <ButtonWrapper>
+            <Button>&lt;&lt;</Button>
             <Button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -30,10 +31,15 @@ function Pagination({ total, limit, currentPage, curParams, setCurParams }) {
             >
                 &gt;
             </Button>
-        </>
+            <Button>&gt;&gt;</Button>
+        </ButtonWrapper>
     );
 }
-
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 const Button = styled.button`
     border: none;
     border-radius: 8px;

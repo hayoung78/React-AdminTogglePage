@@ -3,6 +3,9 @@ import Pagenation from "../components/common/pagenation";
 import createUsers from "../utils/user";
 import styled from "styled-components";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { StyleSelect } from "../components/styleTheme/selectBox.style";
+import Select from "../components/common/select";
+import { COLORS } from "../designToken/color";
 
 const UserPage = () => {
     const [userData, setUserData] = useState([]);
@@ -66,59 +69,79 @@ const UserPage = () => {
         searchParams.set(key, value);
         setSearchParams(searchParams, { replace: true });
     };
-
+    const viewOptions = [
+        { id: 1, value: 20, label: "20개씩보기" },
+        { id: 2, value: 50, label: "50개씩보기" },
+    ];
+    const sortOrderOptions = [
+        { id: 1, value: "desc", label: "내림차순" },
+        { id: 2, value: "asc", label: "오름차순" },
+    ];
+    const sortOptions = [
+        { id: 1, value: "name", label: "이름순" },
+        { id: 2, value: "birth", label: "생일순" },
+    ];
     return (
-        <MainWrapper>
-            <select
-                value={limit}
-                onChange={(e) =>
-                    handleSortChange("limit", Number(e.target.value))
-                }
-            >
-                <option value="20">20개씩 보기</option>
-                <option value="50">50개씩 보기</option>
-            </select>
-            <select
-                value={urlParams?.get("sortOrder")}
-                onChange={(e) => handleSortChange("sortOrder", e.target.value)}
-            >
-                <option value="desc">내림차순</option>
-                <option value="asc">오름차순</option>
-            </select>
-            <select
-                value={urlParams?.get("sort")}
-                onChange={(e) => handleSortChange("sort", e.target.value)}
-            >
-                <option value="name">이름순</option>
-                <option value="birth">생일순</option>
-            </select>
+        <>
+            <SelectWrapper>
+                <Select
+                    value={limit}
+                    color="mainPurple"
+                    option={viewOptions}
+                    onChange={(e) =>
+                        handleSortChange("limit", Number(e.target.value))
+                    }
+                ></Select>
+                <Select
+                    value={urlParams?.get("sortOrder")}
+                    color="lightPeach"
+                    option={sortOrderOptions}
+                    onChange={(e) =>
+                        handleSortChange("sortOrder", e.target.value)
+                    }
+                ></Select>
+                <Select
+                    value={urlParams?.get("sort")}
+                    color="green"
+                    option={sortOptions}
+                    onChange={(e) => handleSortChange("sort", e.target.value)}
+                ></Select>
+            </SelectWrapper>
+            <MainWrapper>
+                {userData.slice(startIndex, startIndex + limit).map((user) => (
+                    <UserContainer key={user.id}>
+                        <UserInfo>{user.id}</UserInfo>
+                        <UserInfo>{user.name}</UserInfo>
+                        <UserInfo>{user.birth}</UserInfo>
+                        <UserInfo>
+                            {user.phone.replace(/(?<=010-).*(?=-)/, "****")}
+                        </UserInfo>
+                        <UserInfo>{user.lastLoginDate}</UserInfo>
+                    </UserContainer>
+                ))}
 
-            {userData.slice(startIndex, startIndex + limit).map((user) => (
-                <UserContainer key={user.id}>
-                    <UserInfo>{user.id}</UserInfo>
-                    <UserInfo>{user.name}</UserInfo>
-                    <UserInfo>{user.birth}</UserInfo>
-                    <UserInfo>
-                        {user.phone.replace(/(?<=010-).*(?=-)/, "****")}
-                    </UserInfo>
-                    <UserInfo>{user.lastLoginDate}</UserInfo>
-                </UserContainer>
-            ))}
-
-            <Pagenation
-                curParams={searchParams}
-                setCurParams={setSearchParams}
-                total={userData.length}
-                limit={limit}
-                currentPage={currentPage}
-            />
-        </MainWrapper>
+                <Pagenation
+                    curParams={searchParams}
+                    setCurParams={setSearchParams}
+                    total={userData.length}
+                    limit={limit}
+                    currentPage={currentPage}
+                />
+            </MainWrapper>
+        </>
     );
 };
 export default UserPage;
+const SelectWrapper = styled.div`
+    position: absolute;
+    top: 0;
+`;
 
 const MainWrapper = styled.div`
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    align-items: center;
     height: fit-content;
 `;
 const UserContainer = styled.div`
@@ -130,6 +153,7 @@ const UserContainer = styled.div`
     border: 2px solid #d7d7d7;
     display: flex;
     flex-direction: column;
+    background-color: ${COLORS.SYSTEM.white};
 `;
 const UserInfo = styled.p`
     font-size: 15px;
