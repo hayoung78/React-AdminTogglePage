@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
+import Button from "./button";
 
 function Pagination({ total, limit, currentPage, curParams, setCurParams }) {
     const numPages = Math.ceil(total / limit);
@@ -11,36 +12,40 @@ function Pagination({ total, limit, currentPage, curParams, setCurParams }) {
     };
     return (
         <ButtonWrapper>
-            <Button>&lt;&lt;</Button>
-            <Button
+            <Button color="lemon" size="mini" text="&lt;&lt;" />
+            <SButton
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
             >
                 &lt;
-            </Button>
+            </SButton>
             {Array(numPages)
                 .fill()
                 .map((_, i) => (
-                    <Button key={i + 1} onClick={() => handlePageChange(i + 1)}>
+                    <SButton
+                        key={i + 1}
+                        onClick={() => handlePageChange(i + 1)}
+                    >
                         {i + 1}
-                    </Button>
+                    </SButton>
                 ))}
-            <Button
+            <SButton
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === numPages}
             >
                 &gt;
-            </Button>
-            <Button>&gt;&gt;</Button>
+            </SButton>
+            <Button color="lemon" size="mini" text="&gt;&gt;" />
         </ButtonWrapper>
     );
 }
 const ButtonWrapper = styled.div`
+    gap: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
 `;
-const Button = styled.button`
+const SButton = styled.button`
     border: none;
     border-radius: 8px;
     padding: 10px;
